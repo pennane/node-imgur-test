@@ -27,6 +27,6 @@ const uploadImage = async (filePath: string) => {
   return response.data.link
 }
 
-uploadImage('./src/testimgg.png')
+uploadImage('./src/testimg.png')
   .then((link) => console.log('Image uploaded into: ' + link))
   .catch(console.error)
