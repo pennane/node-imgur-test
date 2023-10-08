@@ -23,10 +23,10 @@ const uploadImage = async (filePath: string) => {
     image: createReadStream(filePath) as any,
     type: 'stream',
   })
-  if (response.data.link) {
+  if (response?.data?.link) {
     return response.data.link
   }
-  throw new Error('Invalid response from Imgur')
+  throw new Error('Invalid response from Imgur - the file path may be invalid')
 }
 
 uploadImage('./src/testimg.png')
