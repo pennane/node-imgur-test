@@ -1,17 +1,13 @@
 import ImgurClient from 'imgur'
-import dotenv from 'dotenv'
 import { createReadStream } from 'fs'
+import dotenv from 'dotenv'
 dotenv.config()
 
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const IMGUR_CLIENT_SECRET = process.env.IMGUR_CLIENT_SECRET
 
-if (!IMGUR_CLIENT_ID) {
-  throw new Error('IMGUR_CLIENT_ID is not set in .env')
-}
-if (!IMGUR_CLIENT_SECRET) {
-  throw new Error('IMGUR_CLIENT_SECRET is not set in .env')
-}
+if (!IMGUR_CLIENT_ID) throw new Error('IMGUR_CLIENT_ID not in .env')
+if (!IMGUR_CLIENT_SECRET) throw new Error('IMGUR_CLIENT_SECRET not in .env')
 
 const client = new ImgurClient({
   clientId: IMGUR_CLIENT_ID,
@@ -23,12 +19,14 @@ const uploadImage = async (filePath: string) => {
     image: createReadStream(filePath) as any,
     type: 'stream',
   })
-  if (response?.data?.link) {
-    return response.data.link
+
+  if (response.status !== 200 || typeof response?.data?.link !== 'string') {
+    throw new Error('Upload failed ' + JSON.stringify(response))
   }
-  throw new Error('Invalid response from Imgur - the file path may be invalid')
+
+  return response.data.link
 }
 
-uploadImage('./src/testimg.png')
-  .then((link) => console.log('Image uploaded at: ' + link))
-  .catch((err) => console.log('Upload failed: ' + err.message))
+uploadImage('./src/testimgg.png')
+  .then((link) => console.log('Image uploaded into: ' + link))
+  .catch(console.error)
